@@ -186,7 +186,7 @@ export default function Sidebar({
               <div>
                 <p className="text-[11px] font-medium uppercase tracking-wider text-muted mb-1">API Key</p>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm text-foreground font-mono tracking-wider">
+                  <p className={`text-sm text-foreground ${apiKeyVisible ? "" : "font-mono tracking-wider"}`}>
                     {apiKeyVisible ? "sk-omni-a1b2c3d4e5f6g7h8" : "••••••••••••••••••"}
                   </p>
                   <button
