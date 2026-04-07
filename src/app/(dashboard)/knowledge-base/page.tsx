@@ -117,7 +117,7 @@ export default function KnowledgeBasePage() {
         </h2>
         <button
           onClick={() => setEditorOpen(true)}
-          className="rounded-lg bg-accent-orange px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-orange/80"
+          className="rounded-lg bg-accent-purple px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-purple/80"
         >
           Open Knowledge Base
         </button>
@@ -155,11 +155,12 @@ export default function KnowledgeBasePage() {
         </div>
       </div>
 
-      {/* Full-screen Obsidian-style editor overlay */}
+      {/* Obsidian-style editor dialog overlay */}
       {editorOpen && (
-        <div className="fixed inset-0 z-50 flex bg-[#0e0e0e]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="flex h-[80%] w-[80%] overflow-hidden rounded-xl border border-border bg-[#0e0e0e] shadow-2xl">
           {/* Sidebar */}
-          <div className="flex w-60 flex-col border-r border-border bg-[#141414]">
+          <div className="flex w-60 flex-col border-r border-border bg-[#141414] rounded-l-xl">
             <div className="flex items-center justify-between border-b border-border px-4 py-3">
               <span className="text-xs font-semibold uppercase tracking-widest text-muted">
                 Notes
@@ -240,6 +241,7 @@ export default function KnowledgeBasePage() {
               />
             </div>
           </div>
+        </div>
         </div>
       )}
     </>
