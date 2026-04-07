@@ -11,94 +11,98 @@ const topics = [
 ];
 
 const mockNotes: Record<string, { title: string; content: string }> = {
-  "razorpay-interview-prep.md": {
-    title: "razorpay-interview-prep.md",
-    content: `# Razorpay Interview Prep
+  "ats-keyword-optimization.md": {
+    title: "ats-keyword-optimization.md",
+    content: `# ATS Keyword Optimization Guide
 
-## Company Overview
-- Founded 2014 by Harshil Mathur & Shashank Kumar
-- Full-stack payments solution for Indian businesses
-- Processes billions in transactions annually
-- Key products: Payment Gateway, RazorpayX, Razorpay Capital
+## How ATS Keyword Matching Works
+- Most ATS systems use keyword-frequency matching against the job description
+- Exact matches score higher than semantic/synonym matches
+- Section headings (Experience, Skills, Education) help the parser categorize content
+- Avoid tables, columns, and images — ATS parsers often can't read them
 
-## Technical Architecture
-- Microservices-based architecture on AWS
-- Event-driven processing with Kafka
-- MySQL + Redis for primary data stores
-- Real-time fraud detection pipeline
+## Keyword Strategy
+1. **Extract keywords** from the job description — focus on hard skills, tools, and certifications
+2. **Mirror exact phrasing** — if the JD says "CI/CD pipelines", don't write "continuous deployment"
+3. **Use both acronyms and full forms** — write "Amazon Web Services (AWS)" at least once
+4. **Distribute keywords naturally** — place them in the summary, experience bullets, and skills section
 
-## Key Topics to Prepare
-1. **Payment Gateway Internals** — how a transaction flows from checkout to settlement
-2. **Idempotency** — critical for payment systems, every API call must be safely retryable
-3. **Reconciliation** — matching bank statements with internal ledger entries
-4. **PCI DSS Compliance** — tokenization, encryption at rest, network segmentation
+## Common ATS-Friendly Sections
+- Professional Summary
+- Work Experience
+- Technical Skills
+- Education & Certifications
+- Projects (optional but helpful)
 
-## Common Interview Questions
-- Design a payment gateway that handles 10k TPS
-- How would you ensure exactly-once processing for payments?
-- Walk through what happens when a user clicks "Pay Now"
-- How do you handle partial failures in a distributed payment flow?
+## Formatting Rules
+- Use standard fonts: Arial, Calibri, Times New Roman
+- Stick to .docx or .pdf (check which the portal accepts)
+- No headers/footers — many parsers skip them entirely
+- Use simple bullet points (•, -, or *)
+- Avoid special characters in section headings
 
-## Behavioral Notes
-- They value ownership and bias for action
-- Be ready to talk about a time you shipped something under pressure
-- Culture is very engineering-driven, emphasize technical depth
+## Red Flags That Lower ATS Score
+- Keyword stuffing (repeating the same term 20 times)
+- White text / hidden keywords — modern ATS systems detect this
+- Missing contact info or malformed email
+- Non-standard section names like "My Journey" instead of "Work Experience"
+
+## Score Thresholds (Typical)
+- **90%+** — Strong match, very likely to pass to recruiter
+- **70-89%** — Moderate match, depends on applicant volume
+- **Below 70%** — Likely filtered out automatically
 `,
   },
-  "system-design-notes.md": {
-    title: "system-design-notes.md",
-    content: `# System Design Notes
+  "ats-parsing-pitfalls.md": {
+    title: "ats-parsing-pitfalls.md",
+    content: `# ATS Parsing Pitfalls & Edge Cases
 
-## Framework for Any Design Question
-1. **Clarify requirements** — functional vs non-functional, scale estimates
-2. **API design** — define the core endpoints/interfaces
-3. **High-level design** — draw the main components and data flow
-4. **Deep dive** — pick 1-2 components to detail, discuss trade-offs
-5. **Bottlenecks & scaling** — identify limits, propose solutions
+## Why Resumes Get Rejected by ATS
+Most rejections aren't about qualifications — they're about formatting and parsing failures.
+The scanner can't score what it can't read.
 
-## Key Numbers to Remember
-- QPS from DAU: \`DAU × queries/user / 86400\`
-- Storage: estimate per-record size × records/day × retention
-- 1 server ≈ 10k-50k concurrent connections (with async I/O)
-- SSD read: ~100μs, HDD seek: ~10ms, network round-trip same DC: ~0.5ms
+## Common Parsing Failures
 
-## Common Patterns
-### Rate Limiter
-- Token bucket or sliding window counter
-- Redis INCR + EXPIRE for distributed rate limiting
-- Return 429 with Retry-After header
+### 1. Multi-Column Layouts
+- ATS reads left-to-right, top-to-bottom
+- Two-column resumes often merge text from both columns into gibberish
+- **Fix:** Use a single-column layout for the main content
 
-### URL Shortener
-- Base62 encode an auto-increment ID or hash
-- Read-heavy: cache popular URLs in Redis
-- 301 (permanent) vs 302 (temporary) redirect trade-off
+### 2. Graphics & Icons
+- Skill bars, star ratings, and icons are completely invisible to ATS
+- Contact info embedded in a header graphic gets lost
+- **Fix:** Use plain text for all critical information
 
-### Chat System
-- WebSocket for real-time delivery
-- Fan-out on write for small group chats
-- Fan-out on read for celebrity/large group scenarios
-- Message queue (Kafka) for reliability
+### 3. Custom Fonts & Ligatures
+- Some fonts render characters the parser doesn't recognize
+- Ligatures (fi, fl, ff) can cause word-matching failures
+- **Fix:** Stick to system fonts, test by copy-pasting text from your PDF
 
-### News Feed
-- Pull model: query on request (simpler, slower reads)
-- Push model: pre-compute feed on write (faster reads, more storage)
-- Hybrid: push for normal users, pull for high-follower accounts
+### 4. Tables for Layout
+- ATS may read table cells in wrong order or skip them
+- Skills listed in a table might not get indexed
+- **Fix:** Use simple lists instead of tables
 
-## Database Selection Cheat Sheet
-| Need | Use |
-|------|-----|
-| ACID transactions | PostgreSQL / MySQL |
-| High write throughput | Cassandra / ScyllaDB |
-| Document flexibility | MongoDB |
-| Caching / leaderboards | Redis |
-| Full-text search | Elasticsearch |
-| Time-series data | InfluxDB / TimescaleDB |
-| Graph relationships | Neo4j |
+## File Format Comparison
+| Format | Parsing Reliability | Notes |
+|--------|-------------------|-------|
+| .docx  | High | Best for most ATS systems |
+| .pdf (text-based) | High | Good if exported from Word/Docs |
+| .pdf (scanned/image) | Very Low | Needs OCR, often fails |
+| .txt   | Perfect parsing | But no formatting at all |
+| .pages | Low | Many ATS can't read Apple formats |
 
-## CAP Theorem Reminder
-- **CP**: consistency + partition tolerance (e.g., ZooKeeper)
-- **AP**: availability + partition tolerance (e.g., Cassandra)
-- In practice, choose based on business need: payments → CP, social feed → AP
+## Testing Your Resume
+1. Copy-paste your PDF into a plain text editor — if it's garbled, ATS will struggle too
+2. Run it through a free ATS simulator before submitting
+3. Check that your name, email, and phone parse correctly
+4. Verify job titles and company names aren't merged with dates
+
+## Pro Tips
+- Always tailor per application — generic resumes score lower
+- Put the most important keywords in the first half of the resume
+- Use the exact job title from the posting in your experience section
+- Include a "Technical Skills" section as a keyword-rich summary
 `,
   },
 };
