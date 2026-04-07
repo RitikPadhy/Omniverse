@@ -1,11 +1,21 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
-const NODES = [
-  { id: "ats-scanner", label: "ATS Scanner", x: 0, y: 0, radius: 32, color: "#8b7cf6" },
-  { id: "keywords", label: "ats-keyword-optimization.md", x: 0, y: 0, radius: 22, color: "#6db870" },
-  { id: "pitfalls", label: "ats-parsing-pitfalls.md", x: 0, y: 0, radius: 22, color: "#e8913a" },
+interface Node3D {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  z: number;
+  baseRadius: number;
+  color: string;
+}
+
+const NODES_3D: Node3D[] = [
+  { id: "ats-scanner", label: "ATS Scanner", x: 0, y: 0, z: 0, baseRadius: 18, color: "#8b7cf6" },
+  { id: "keywords", label: "ats-keyword-optimization.md", x: -140, y: -80, z: 60, baseRadius: 12, color: "#6db870" },
+  { id: "pitfalls", label: "ats-parsing-pitfalls.md", x: 140, y: 70, z: -50, baseRadius: 12, color: "#e8913a" },
 ];
 
 const EDGES = [
@@ -13,77 +23,134 @@ const EDGES = [
   { from: "ats-scanner", to: "pitfalls" },
 ];
 
+function rotateY(x: number, z: number, angle: number) {
+  return {
+    x: x * Math.cos(angle) - z * Math.sin(angle),
+    z: x * Math.sin(angle) + z * Math.cos(angle),
+  };
+}
+
+function project(x: number, y: number, z: number, fov: number) {
+  const scale = fov / (fov + z);
+  return { sx: x * scale, sy: y * scale, scale };
+}
+
 function GraphView({ width, height }: { width: number; height: number }) {
-  const cx = width / 2;
-  const cy = height / 2;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const angleRef = useRef(0);
+  const rafRef = useRef<number>(0);
 
-  const nodes = NODES.map((n, i) => {
-    if (i === 0) return { ...n, x: cx, y: cy };
-    const angle = i === 1 ? -Math.PI / 4 : Math.PI / 4;
-    const dist = Math.min(width, height) * 0.3;
-    return { ...n, x: cx + Math.cos(angle) * dist, y: cy + Math.sin(angle) * dist };
-  });
+  const draw = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-  const nodeMap = Object.fromEntries(nodes.map((n) => [n.id, n]));
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+
+    const cx = width / 2;
+    const cy = height / 2;
+    const fov = 500;
+
+    angleRef.current += 0.003;
+    const angle = angleRef.current;
+
+    // Clear
+    ctx.clearRect(0, 0, width, height);
+
+    // Transform nodes
+    const projected = NODES_3D.map((n) => {
+      const r = rotateY(n.x, n.z, angle);
+      const p = project(r.x, n.y, r.z, fov);
+      return { ...n, sx: cx + p.sx, sy: cy + p.sy, scale: p.scale, rz: r.z };
+    });
+
+    // Sort by depth (back to front)
+    const sorted = [...projected].sort((a, b) => b.rz - a.rz);
+    const nodeMap = Object.fromEntries(projected.map((n) => [n.id, n]));
+
+    // Draw edges
+    for (const e of EDGES) {
+      const from = nodeMap[e.from];
+      const to = nodeMap[e.to];
+      const avgDepth = (from.scale + to.scale) / 2;
+      ctx.beginPath();
+      ctx.moveTo(from.sx, from.sy);
+      ctx.lineTo(to.sx, to.sy);
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.06 * avgDepth})`;
+      ctx.lineWidth = 1.5 * avgDepth;
+      ctx.stroke();
+    }
+
+    // Draw nodes (sorted back-to-front)
+    for (const n of sorted) {
+      const r = n.baseRadius * n.scale;
+      const alpha = 0.3 + 0.7 * n.scale;
+
+      // Outer glow
+      const glow = ctx.createRadialGradient(n.sx, n.sy, r * 0.5, n.sx, n.sy, r * 4);
+      glow.addColorStop(0, n.color + "30");
+      glow.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.arc(n.sx, n.sy, r * 4, 0, Math.PI * 2);
+      ctx.fillStyle = glow;
+      ctx.fill();
+
+      // Sphere body gradient
+      const grad = ctx.createRadialGradient(
+        n.sx - r * 0.3, n.sy - r * 0.3, r * 0.1,
+        n.sx, n.sy, r
+      );
+      grad.addColorStop(0, n.color);
+      grad.addColorStop(0.7, n.color + "cc");
+      grad.addColorStop(1, n.color + "44");
+
+      ctx.beginPath();
+      ctx.arc(n.sx, n.sy, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Specular highlight
+      const spec = ctx.createRadialGradient(
+        n.sx - r * 0.25, n.sy - r * 0.3, 0,
+        n.sx - r * 0.25, n.sy - r * 0.3, r * 0.6
+      );
+      spec.addColorStop(0, "rgba(255,255,255,0.35)");
+      spec.addColorStop(1, "transparent");
+      ctx.beginPath();
+      ctx.arc(n.sx, n.sy, r, 0, Math.PI * 2);
+      ctx.fillStyle = spec;
+      ctx.globalAlpha = alpha;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // Label
+      const fontSize = Math.max(9, 11 * n.scale);
+      ctx.font = `500 ${fontSize}px system-ui, -apple-system, sans-serif`;
+      ctx.textAlign = "center";
+      ctx.fillStyle = `rgba(229, 229, 229, ${alpha * 0.9})`;
+      ctx.fillText(n.label, n.sx, n.sy + r + fontSize + 4);
+    }
+
+    rafRef.current = requestAnimationFrame(draw);
+  }, [width, height]);
+
+  useEffect(() => {
+    rafRef.current = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, [draw]);
 
   return (
-    <svg width={width} height={height} className="select-none">
-      {/* Edges */}
-      {EDGES.map((e) => {
-        const from = nodeMap[e.from];
-        const to = nodeMap[e.to];
-        return (
-          <line
-            key={`${e.from}-${e.to}`}
-            x1={from.x}
-            y1={from.y}
-            x2={to.x}
-            y2={to.y}
-            stroke="#2a2a2a"
-            strokeWidth={2}
-          />
-        );
-      })}
-      {/* Nodes */}
-      {nodes.map((n) => (
-        <g key={n.id}>
-          {/* Glow */}
-          <circle cx={n.x} cy={n.y} r={n.radius + 8} fill={n.color} opacity={0.08} />
-          {/* Node circle */}
-          <circle
-            cx={n.x}
-            cy={n.y}
-            r={n.radius}
-            fill="#1a1a1a"
-            stroke={n.color}
-            strokeWidth={2}
-          />
-          {/* Label */}
-          <text
-            x={n.x}
-            y={n.y + n.radius + 18}
-            textAnchor="middle"
-            fill="#e5e5e5"
-            fontSize={11}
-            fontFamily="var(--font-sans)"
-          >
-            {n.label}
-          </text>
-          {/* Inner icon text */}
-          <text
-            x={n.x}
-            y={n.y + 4}
-            textAnchor="middle"
-            fill={n.color}
-            fontSize={n.id === "ats-scanner" ? 13 : 10}
-            fontFamily="var(--font-mono)"
-            fontWeight={600}
-          >
-            {n.id === "ats-scanner" ? "ATS" : ".md"}
-          </text>
-        </g>
-      ))}
-    </svg>
+    <canvas
+      ref={canvasRef}
+      style={{ width, height }}
+      className="select-none"
+    />
   );
 }
 
