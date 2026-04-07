@@ -78,7 +78,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      <nav className="flex-1 space-y-8 px-3">
+      <nav className="mt-4 flex-1 space-y-6 px-3">
         <div>
           <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted">
             Workspace
