@@ -15,12 +15,54 @@ const communityLinks = [
   { href: "/build", label: "Build a tool" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  open,
+  onToggle,
+}: {
+  open: boolean;
+  onToggle: () => void;
+}) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 flex w-56 flex-col bg-sidebar border-r border-border">
-      <div className="px-5 py-6">
+    <>
+      <button
+        onClick={onToggle}
+        className="fixed top-5 left-4 z-40 flex h-8 w-8 items-center justify-center rounded-md text-muted hover:text-foreground hover:bg-card transition-colors"
+        aria-label={open ? "Close sidebar" : "Open sidebar"}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          {open ? (
+            <>
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </>
+          ) : (
+            <>
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </>
+          )}
+        </svg>
+      </button>
+
+      <aside
+        className={`fixed inset-y-0 left-0 z-30 flex w-56 flex-col bg-sidebar border-r border-border transition-transform duration-300 ease-in-out ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+      <div className="px-5 py-6 pl-14">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Omniverse
         </h1>
@@ -100,5 +142,6 @@ export default function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }
