@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const workspaceLinks = [
   { href: "/", label: "Home" },
@@ -23,6 +24,7 @@ export default function Sidebar({
   onToggle: () => void;
 }) {
   const pathname = usePathname();
+  const [profileOpen, setProfileOpen] = useState(false);
 
   return (
     <>
@@ -141,17 +143,60 @@ export default function Sidebar({
       </nav>
 
       <div className="border-t border-border p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-card text-xs font-medium text-muted">
+        <button
+          onClick={() => setProfileOpen(true)}
+          className="flex w-full items-center gap-3 rounded-md px-1 py-1 -mx-1 hover:bg-card transition-colors cursor-pointer"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-card text-xs font-medium text-muted">
             AK
           </div>
-          <div>
+          <div className="text-left">
             <p className="text-sm font-medium text-foreground">Aryan K.</p>
             <p className="text-xs text-muted">Trusted creator</p>
           </div>
-        </div>
+        </button>
       </div>
     </aside>
+
+      {profileOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setProfileOpen(false)}
+        >
+          <div
+            className="w-80 rounded-lg border border-border bg-card p-6 shadow-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-4 mb-6">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-background text-sm font-semibold text-foreground">
+                AK
+              </div>
+              <div>
+                <p className="text-base font-semibold text-foreground">Aryan K.</p>
+                <p className="text-xs text-muted">Trusted creator</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted mb-1">Email</p>
+                <p className="text-sm text-foreground">aryan@example.com</p>
+              </div>
+              <div>
+                <p className="text-[11px] font-medium uppercase tracking-wider text-muted mb-1">API Key</p>
+                <p className="text-sm text-foreground font-mono tracking-wider">••••••••••••••••</p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setProfileOpen(false)}
+              className="mt-6 w-full rounded-md bg-background py-2 text-sm text-muted hover:text-foreground border border-border hover:border-foreground/20 transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
