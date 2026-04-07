@@ -1,14 +1,14 @@
 const stats = [
-  { value: "247", label: "Notes in your KB" },
-  { value: "6", label: "Tools you've built" },
-  { value: "1.2k", label: "People using your KB" },
+  { value: "247", label: "Notes in your skills" },
+  { value: "6", label: "Agents you've built" },
+  { value: "1.2k", label: "People using your skills" },
   { value: "91%", label: "Outcome rate" },
 ];
 
 const recentActivity = [
   { text: "ATS scanner used", time: "2 min ago" },
   { text: 'New note added — "Razorpay interview prep"', time: "1 hr" },
-  { text: "Priya used your KB to build a tool", time: "3 hr ago" },
+  { text: "Priya added your skill to their agent", time: "3 hr ago" },
   { text: "Outcome reported — interview callback", time: "Yesterday" },
 ];
 
@@ -32,7 +32,12 @@ export default function HomePage() {
     <>
       {/* Header */}
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-foreground">Home</h2>
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground">Home</h2>
+          <p className="mt-1 text-sm text-muted">
+            Your workspace at a glance.
+          </p>
+        </div>
         <span className="rounded-full border border-border px-3 py-1 text-xs text-muted">
           Personal workspace
         </span>

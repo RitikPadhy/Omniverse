@@ -12,15 +12,18 @@ interface Node3D {
   color: string;
 }
 
+const WHITE = "#e5e5e5";
+const DIST = 150;
+
 const NODES_3D: Node3D[] = [
-  { id: "ats-scanner", label: "ATS Scanner", x: 0, y: 0, z: 0, baseRadius: 18, color: "#8b7cf6" },
-  { id: "keywords", label: "ats-keyword-optimization.md", x: -140, y: -80, z: 60, baseRadius: 12, color: "#6db870" },
-  { id: "pitfalls", label: "ats-parsing-pitfalls.md", x: 140, y: 70, z: -50, baseRadius: 12, color: "#e8913a" },
+  { id: "overview", label: "index.md", x: 0, y: 0, z: 0, baseRadius: 14, color: WHITE },
+  { id: "keywords", label: "ats-keyword-optimization.md", x: -DIST, y: 0, z: 0, baseRadius: 8, color: WHITE },
+  { id: "pitfalls", label: "ats-parsing-pitfalls.md", x: DIST, y: 0, z: 0, baseRadius: 8, color: WHITE },
 ];
 
 const EDGES = [
-  { from: "ats-scanner", to: "keywords" },
-  { from: "ats-scanner", to: "pitfalls" },
+  { from: "overview", to: "keywords" },
+  { from: "overview", to: "pitfalls" },
 ];
 
 function rotateY(x: number, z: number, angle: number) {
@@ -55,8 +58,7 @@ function GraphView({ width, height }: { width: number; height: number }) {
     const cy = height / 2;
     const fov = 500;
 
-    angleRef.current += 0.003;
-    const angle = angleRef.current;
+    const angle = 0;
 
     // Clear
     ctx.clearRect(0, 0, width, height);
@@ -154,7 +156,7 @@ function GraphView({ width, height }: { width: number; height: number }) {
   );
 }
 
-export default function ToolsPage() {
+export default function AgentsPage() {
   const [graphOpen, setGraphOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const [dims, setDims] = useState({ w: 600, h: 400 });
@@ -173,23 +175,32 @@ export default function ToolsPage() {
 
   return (
     <>
-      <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-foreground">My tools</h2>
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold text-foreground">Agents</h2>
+        <p className="mt-1 text-sm text-muted">
+          Create agents by combining skills and MCPs, then test them.
+        </p>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* ATS Scanner tool card */}
+        {/* ATS Scanner agent card */}
         <div className="rounded-lg border border-border bg-card p-5 transition-colors hover:bg-card-hover">
           <h3 className="text-sm font-medium text-foreground">ATS Scanner</h3>
           <p className="mt-1 text-xs text-muted">
-            Scan resumes against job descriptions for ATS compatibility scoring.
+            Agent that combines resume-scanning skills with PDF and web MCPs for ATS compatibility scoring.
           </p>
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
+              <span className="rounded bg-accent-purple/10 px-2 py-0.5 text-[10px] font-medium text-accent-purple">
+                3 Skills
+              </span>
+              <span className="rounded bg-accent-orange/10 px-2 py-0.5 text-[10px] font-medium text-accent-orange">
+                2 MCPs
+              </span>
               <span className="rounded bg-accent-green/10 px-2 py-0.5 text-[10px] font-medium text-accent-green">
                 Active
               </span>
-              <span className="text-[10px] text-muted">Used 2 min ago</span>
+              <span className="text-[10px] text-muted">2 min ago</span>
             </div>
             <button
               onClick={() => setGraphOpen(true)}
@@ -203,7 +214,7 @@ export default function ToolsPage() {
         {/* Empty state */}
         <div className="flex items-center justify-center rounded-lg border border-dashed border-border p-8">
           <p className="text-sm text-muted">
-            Build a new tool &rarr;
+            Build a new agent &rarr;
           </p>
         </div>
       </div>
@@ -244,16 +255,12 @@ export default function ToolsPage() {
             {/* Legend */}
             <div className="flex items-center gap-6 border-t border-border px-5 py-2.5">
               <div className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent-purple" />
-                <span className="text-[10px] text-muted">Tool</span>
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground" />
+                <span className="text-[10px] text-muted">index.md (main)</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent-green" />
-                <span className="text-[10px] text-muted">Keyword Optimization</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="inline-block h-2.5 w-2.5 rounded-full bg-accent-orange" />
-                <span className="text-[10px] text-muted">Parsing Pitfalls</span>
+                <span className="inline-block h-2.5 w-2.5 rounded-full bg-foreground opacity-60" />
+                <span className="text-[10px] text-muted">Linked notes</span>
               </div>
             </div>
           </div>

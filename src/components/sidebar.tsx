@@ -6,8 +6,9 @@ import { useState } from "react";
 
 const workspaceLinks = [
   { href: "/", label: "Home" },
-  { href: "/tools", label: "My tools" },
-  { href: "/knowledge-base", label: "Knowledge base" },
+  { href: "/skills", label: "Skills" },
+  { href: "/mcps", label: "MCPs" },
+  { href: "/agents", label: "Agents" },
   { href: "/ask", label: "Ask anything" },
 ];
 

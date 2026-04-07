@@ -11,6 +11,46 @@ const topics = [
 ];
 
 const mockNotes: Record<string, { title: string; content: string }> = {
+  "index.md": {
+    title: "index.md",
+    content: `# ATS Scanner — Overview
+
+## What Is the ATS Scanner?
+The ATS Scanner analyzes your resume against a target job description and returns a compatibility score. It highlights missing keywords, formatting issues, and section-level feedback so you can optimize before submitting.
+
+## How It Works
+1. Upload your resume (.docx or .pdf)
+2. Paste the job description
+3. The scanner parses both documents and runs a keyword + structure analysis
+4. You get a score (0–100) with actionable recommendations
+
+## Related Notes
+- [[ats-keyword-optimization.md]] — Deep dive into keyword matching strategy
+- [[ats-parsing-pitfalls.md]] — Common formatting issues that break ATS parsing
+
+## Core Modules
+- **Keyword Extractor** — Pulls hard skills, tools, certifications from the JD
+- **Resume Parser** — Extracts sections, bullet points, and metadata from your resume
+- **Matcher Engine** — Compares extracted keywords against resume content
+- **Score Calculator** — Weights matches by section importance and frequency
+- **Report Generator** — Produces the final score card with per-section breakdown
+
+## Score Breakdown
+| Section | Weight |
+|---------|--------|
+| Technical Skills | 30% |
+| Work Experience | 30% |
+| Summary / Objective | 15% |
+| Education & Certs | 15% |
+| Projects | 10% |
+
+## Roadmap
+- [ ] Bulk scan — upload multiple resumes at once
+- [ ] JD auto-fetch — paste a job URL instead of the description
+- [ ] Historical tracking — see how your score improves over time
+- [ ] AI rewrite suggestions — one-click keyword injection
+`,
+  },
   "ats-keyword-optimization.md": {
     title: "ats-keyword-optimization.md",
     content: `# ATS Keyword Optimization Guide
@@ -109,21 +149,37 @@ The scanner can't score what it can't read.
 
 const noteKeys = Object.keys(mockNotes);
 
-export default function KnowledgeBasePage() {
+const skillSets = [
+  { id: "ats-scanner", name: "ATS Scanner", notes: 3 },
+];
+
+export default function SkillsPage() {
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [editorOpen, setEditorOpen] = useState(false);
   const [activeNote, setActiveNote] = useState(noteKeys[0]);
+
+  function openSkill() {
+    setPickerOpen(false);
+    setEditorOpen(true);
+    setActiveNote(noteKeys[0]);
+  }
 
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold text-foreground">
-          Knowledge base
-        </h2>
+        <div>
+          <h2 className="text-2xl font-semibold text-foreground">
+            Skills
+          </h2>
+          <p className="mt-1 text-sm text-muted">
+            Build and manage the knowledge your agents use to reason.
+          </p>
+        </div>
         <button
-          onClick={() => setEditorOpen(true)}
+          onClick={() => setPickerOpen(true)}
           className="rounded-lg bg-accent-purple px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-purple/80"
         >
-          Open Knowledge Base
+          Open Skills
         </button>
       </div>
 
@@ -159,35 +215,60 @@ export default function KnowledgeBasePage() {
         </div>
       </div>
 
+      {/* Skill picker dialog */}
+      {pickerOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
+          onClick={() => setPickerOpen(false)}
+        >
+          <div
+            className="flex w-[480px] overflow-hidden rounded-xl border border-border bg-[#0e0e0e] shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Left column — existing */}
+            <div className="flex-1 border-r border-border p-5">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted">Open</h3>
+              <div className="space-y-2">
+                {skillSets.map((skill) => (
+                  <button
+                    key={skill.id}
+                    onClick={openSkill}
+                    className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-left transition-colors hover:bg-card-hover"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="shrink-0 text-accent-purple">
+                      <path d="M2 4c0-.6.4-1 1-1h4l2 2h4c.6 0 1 .4 1 1v6c0 .6-.4 1-1 1H3c-.6 0-1-.4-1-1V4z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    <div className="flex-1">
+                      <span className="text-sm font-medium text-foreground">{skill.name}</span>
+                    </div>
+                    <span className="text-[10px] text-muted">{skill.notes} notes</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Right column — create */}
+            <div className="flex w-44 flex-col items-center justify-center p-5">
+              <button className="flex flex-col items-center gap-2 text-muted transition-colors hover:text-accent-purple">
+                <svg width="28" height="28" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 3v10M3 8h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                <span className="text-xs font-medium">Create new</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Obsidian-style editor dialog overlay */}
       {editorOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="flex h-[80%] w-[80%] overflow-hidden rounded-xl border border-border bg-[#0e0e0e] shadow-2xl">
           {/* Sidebar */}
           <div className="flex w-60 flex-col border-r border-border bg-[#141414] rounded-l-xl">
-            <div className="flex items-center justify-between border-b border-border px-4 py-3">
+            <div className="flex h-11 items-center border-b border-border px-4">
               <span className="text-xs font-semibold uppercase tracking-widest text-muted">
                 Notes
               </span>
-              <button
-                onClick={() => setEditorOpen(false)}
-                className="text-muted transition-colors hover:text-foreground"
-              >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 4L4 12M4 4l8 8"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
             </div>
             <div className="flex-1 overflow-y-auto p-2">
               {noteKeys.map((key) => (
@@ -231,10 +312,29 @@ export default function KnowledgeBasePage() {
 
           {/* Editor area */}
           <div className="flex flex-1 flex-col">
-            <div className="flex items-center border-b border-border px-6 py-3">
+            <div className="flex h-11 items-center justify-between border-b border-border px-6">
               <span className="text-sm text-muted">
                 {mockNotes[activeNote].title}
               </span>
+              <button
+                onClick={() => setEditorOpen(false)}
+                className="text-muted transition-colors hover:text-foreground"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M12 4L4 12M4 4l8 8"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </button>
             </div>
             <div className="flex-1 overflow-hidden p-6">
               <textarea
