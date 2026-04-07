@@ -54,7 +54,7 @@ export default function Sidebar({
         }`}
       >
       <div className="flex h-16 items-center justify-between px-5">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground leading-none">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground leading-none">
           Omniverse
         </h1>
         <button
