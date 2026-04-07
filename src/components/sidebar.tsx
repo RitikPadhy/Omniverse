@@ -53,7 +53,7 @@ export default function Sidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-      <div className="flex h-16 items-center justify-between px-5">
+      <div className="flex h-16 items-center justify-between px-5 mt-2">
         <h1 className="text-2xl font-semibold tracking-tight text-foreground leading-none">
           Omniverse
         </h1>
