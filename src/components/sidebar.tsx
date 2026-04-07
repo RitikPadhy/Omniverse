@@ -26,45 +26,56 @@ export default function Sidebar({
 
   return (
     <>
-      <button
-        onClick={onToggle}
-        className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
-        aria-label={open ? "Close sidebar" : "Open sidebar"}
-      >
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
+      {!open && (
+        <button
+          onClick={onToggle}
+          className="fixed top-5 left-4 z-40 flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
+          aria-label="Open sidebar"
         >
-          <rect x="3" y="3" width="18" height="18" rx="3" strokeLinejoin="round" />
-          <line x1="9" y1="3" x2="9" y2="21" />
-          {!open && (
-            <>
-              <line x1="15" y1="10" x2="18" y2="12" strokeLinecap="round" />
-              <line x1="15" y1="14" x2="18" y2="12" strokeLinecap="round" />
-            </>
-          )}
-          {open && (
-            <>
-              <line x1="18" y1="10" x2="15" y2="12" strokeLinecap="round" />
-              <line x1="18" y1="14" x2="15" y2="12" strokeLinecap="round" />
-            </>
-          )}
-        </svg>
-      </button>
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="3" strokeLinejoin="round" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <line x1="15" y1="10" x2="18" y2="12" strokeLinecap="round" />
+            <line x1="15" y1="14" x2="18" y2="12" strokeLinecap="round" />
+          </svg>
+        </button>
+      )}
 
       <aside
         className={`fixed inset-y-0 left-0 z-30 flex w-56 flex-col bg-sidebar border-r border-border transition-transform duration-300 ease-in-out ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-      <div className="px-5 py-6">
+      <div className="flex items-center justify-between px-5 py-6">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Omniverse
         </h1>
+        <button
+          onClick={onToggle}
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
+          aria-label={open ? "Close sidebar" : "Open sidebar"}
+        >
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="3" strokeLinejoin="round" />
+            <line x1="9" y1="3" x2="9" y2="21" />
+            <line x1="18" y1="10" x2="15" y2="12" strokeLinecap="round" />
+            <line x1="18" y1="14" x2="15" y2="12" strokeLinecap="round" />
+          </svg>
+        </button>
       </div>
 
       <nav className="flex-1 space-y-6 px-3">
