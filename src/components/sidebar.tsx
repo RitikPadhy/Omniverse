@@ -54,7 +54,7 @@ export default function Sidebar({
         }`}
       >
       <div className="flex items-center justify-between px-5 py-6">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
           Omniverse
         </h1>
         <button
