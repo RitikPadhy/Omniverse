@@ -29,7 +29,7 @@ export default function Sidebar({
       {!open && (
         <button
           onClick={onToggle}
-          className="fixed top-5 left-4 z-40 flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
+          className="fixed top-5 left-4 z-40 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-transparent text-muted hover:text-foreground hover:bg-card hover:border-border hover:shadow-sm active:scale-95 transition-all duration-150"
           aria-label="Open sidebar"
         >
           <svg
@@ -59,7 +59,7 @@ export default function Sidebar({
         </h1>
         <button
           onClick={onToggle}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-muted hover:text-foreground hover:bg-card/80 transition-colors"
+          className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md border border-transparent text-muted hover:text-foreground hover:bg-card hover:border-border hover:shadow-sm active:scale-95 transition-all duration-150"
           aria-label={open ? "Close sidebar" : "Open sidebar"}
         >
           <svg
@@ -78,7 +78,7 @@ export default function Sidebar({
         </button>
       </div>
 
-      <nav className="flex-1 space-y-6 px-3">
+      <nav className="flex-1 space-y-8 px-3">
         <div>
           <p className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-widest text-muted">
             Workspace
