@@ -53,13 +53,13 @@ export default function Sidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-      <div className="flex items-center justify-between px-5 py-6">
-        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+      <div className="flex h-16 items-center justify-between px-5">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground leading-none">
           Omniverse
         </h1>
         <button
           onClick={onToggle}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-muted hover:text-foreground hover:bg-card/80 transition-colors"
           aria-label={open ? "Close sidebar" : "Open sidebar"}
         >
           <svg
