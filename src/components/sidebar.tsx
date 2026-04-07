@@ -28,7 +28,7 @@ export default function Sidebar({
     <>
       <button
         onClick={onToggle}
-        className="fixed top-5 left-4 z-40 flex h-8 w-8 items-center justify-center rounded-md text-muted hover:text-foreground hover:bg-card transition-colors"
+        className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-lg text-muted hover:text-foreground hover:bg-card/80 transition-colors"
         aria-label={open ? "Close sidebar" : "Open sidebar"}
       >
         <svg
@@ -37,21 +37,20 @@ export default function Sidebar({
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeWidth="1.8"
         >
-          {open ? (
+          <rect x="3" y="3" width="18" height="18" rx="3" strokeLinejoin="round" />
+          <line x1="9" y1="3" x2="9" y2="21" />
+          {!open && (
             <>
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+              <line x1="15" y1="10" x2="18" y2="12" strokeLinecap="round" />
+              <line x1="15" y1="14" x2="18" y2="12" strokeLinecap="round" />
             </>
-          ) : (
+          )}
+          {open && (
             <>
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+              <line x1="18" y1="10" x2="15" y2="12" strokeLinecap="round" />
+              <line x1="18" y1="14" x2="15" y2="12" strokeLinecap="round" />
             </>
           )}
         </svg>
@@ -62,7 +61,7 @@ export default function Sidebar({
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-      <div className="px-5 py-6 pl-14">
+      <div className="px-5 py-6">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Omniverse
         </h1>
