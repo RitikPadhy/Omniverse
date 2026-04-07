@@ -1,8 +1,8 @@
-# Recall
+# Omniverse
 
 A personal knowledge base platform that turns your notes into AI-powered tools. Upload notes, build custom tools on top of them using plain language, and share your expertise through a community marketplace — all without writing a single line of code.
 
-![Product Preview](product-preview.png)
+![Product Preview](public/product-preview.png)
 
 ## What It Does
 
@@ -14,7 +14,7 @@ A personal knowledge base platform that turns your notes into AI-powered tools. 
 
 ## Architecture
 
-![Architecture Diagram](architecture.png)
+![Architecture Diagram](public/architecture.png)
 
 - **Frontend** — Next.js + React + Tailwind. Server-side rendered. Screens: Home dashboard, My Tools, Knowledge Base, Ask Anything, Explore marketplace, Tool Builder.
 - **API Layer** — API gateway (auth + rate limiting), tool registry (CRUD), notes ingestion (chunk + embed), trust service (reputation + verification).
@@ -24,7 +24,7 @@ A personal knowledge base platform that turns your notes into AI-powered tools. 
 
 ## Roadmap
 
-![Roadmap](roadmap.png)
+![Roadmap](public/roadmap.png)
 
 | Phase | Timeline | Milestone |
 |-------|----------|-----------|
