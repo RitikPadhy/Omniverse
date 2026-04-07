@@ -13,7 +13,7 @@ const workspaceLinks = [
 
 const communityLinks = [
   { href: "/explore", label: "Explore" },
-  { href: "/build", label: "Build a tool" },
+  { href: "/open-source", label: "Open source projects" },
 ];
 
 export default function Sidebar({
